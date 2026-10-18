@@ -6,8 +6,8 @@ type Stream[T comparable, U comparable] struct {
 	outbox []*OutboxEvent[U]
 }
 
-func NewStream[T comparable, U comparable](id T) *Stream[T, U] {
-	return &Stream[T, U]{
+func NewStream[T comparable, U comparable](id T) Stream[T, U] {
+	return Stream[T, U]{
 		id: id,
 	}
 }
@@ -16,8 +16,8 @@ func RestoreStream[T comparable, U comparable](
 	id T,
 	v Version,
 	es []Event[U],
-) *Stream[T, U] {
-	return &Stream[T, U]{
+) Stream[T, U] {
+	return Stream[T, U]{
 		id:      id,
 		version: v,
 		events:  es,

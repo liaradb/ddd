@@ -5,14 +5,14 @@ type Aggregate[T comparable] struct {
 	version Version
 }
 
-func NewAggregate[T comparable](id T) *Aggregate[T] {
-	return &Aggregate[T]{
+func NewAggregate[T comparable](id T) Aggregate[T] {
+	return Aggregate[T]{
 		id: id,
 	}
 }
 
-func RestoreAggregate[T comparable](id T, v Version) *Aggregate[T] {
-	return &Aggregate[T]{
+func RestoreAggregate[T comparable](id T, v Version) Aggregate[T] {
+	return Aggregate[T]{
 		id:      id,
 		version: v,
 	}
