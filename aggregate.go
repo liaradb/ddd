@@ -19,3 +19,7 @@ func RestoreAggregate[T comparable](id T, v Version) *Aggregate[T] {
 }
 
 func (a *Aggregate[T]) Version() Version { return a.version }
+
+func (a *Aggregate[T]) IncrementVersion() {
+	a.version = a.version.Increment()
+}
