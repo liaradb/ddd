@@ -11,4 +11,11 @@ type OutboxEvent[T comparable] struct {
 	version Version
 }
 
+func newOutboxEvent[T comparable](e Event[T], v Version) *OutboxEvent[T] {
+	return &OutboxEvent[T]{
+		Event:   e,
+		version: v,
+	}
+}
+
 func (e *OutboxEvent[T]) Version() Version { return e.version }
