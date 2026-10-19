@@ -17,11 +17,14 @@ func TestStream(t *testing.T) {
 	if v := s.Version(); v != 1 {
 		t.Errorf("incorrect version: %v, expected: %v", v, 1)
 	}
+
+	s.Outbox()
 }
 
 type (
-	streamID uuid.UUID
-	eventID  uuid.UUID
+	todoID  uuid.UUID
+	eventID uuid.UUID
+	text    string
 )
 
 const (
@@ -29,11 +32,29 @@ const (
 	aggregateName = "stream_aggregate"
 )
 
-func newStreamID() streamID { return streamID(uuid.New()) }
-func newEventID() eventID   { return eventID(uuid.New()) }
+func newStreamID() todoID { return todoID(uuid.New()) }
+func newEventID() eventID { return eventID(uuid.New()) }
 
 type streamEvent struct {
 	id eventID
+}
+
+type createdEvent struct {
+	streamEvent
+	text text
+}
+
+type completedEvent struct {
+	streamEvent
+}
+
+type revertedEvent struct {
+	streamEvent
+}
+
+type textChangedEvent struct {
+	streamEvent
+	text text
 }
 
 func (s *streamEvent) ID() eventID           { return s.id }
@@ -41,11 +62,11 @@ func (s *streamEvent) Name() string          { return streamName }
 func (s *streamEvent) AggregateName() string { return aggregateName }
 
 type streamAggregate struct {
-	Stream[streamID, eventID]
+	Stream[todoID, eventID]
 }
 
 func newStreamAggregate() *streamAggregate {
 	return &streamAggregate{
-		Stream: NewStream[streamID, eventID](newStreamID()),
+		Stream: NewStream[todoID, eventID](newStreamID()),
 	}
 }

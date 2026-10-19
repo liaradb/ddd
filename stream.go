@@ -2,8 +2,8 @@ package ddd
 
 type Stream[T comparable, U comparable] struct {
 	Aggregate[T]
-	events []Event[U]
-	outbox []*OutboxEvent[U]
+	events []*OutboxEvent[T, U]
+	outbox []*OutboxEvent[T, U]
 }
 
 func NewStream[T comparable, U comparable](id T) Stream[T, U] {
@@ -15,7 +15,7 @@ func NewStream[T comparable, U comparable](id T) Stream[T, U] {
 func RestoreStream[T comparable, U comparable](
 	id T,
 	v Version,
-	es []Event[U],
+	es []*OutboxEvent[T, U],
 ) Stream[T, U] {
 	return Stream[T, U]{
 		id:      id,
@@ -24,10 +24,10 @@ func RestoreStream[T comparable, U comparable](
 	}
 }
 
-func (s *Stream[T, U]) Events() []Event[U]        { return s.events }
-func (s *Stream[T, U]) Outbox() []*OutboxEvent[U] { return s.outbox }
+func (s *Stream[T, U]) Events() []*OutboxEvent[T, U] { return s.events }
+func (s *Stream[T, U]) Outbox() []*OutboxEvent[T, U] { return s.outbox }
 
-func (s *Stream[T, U]) AppendEvent(e Event[U]) {
+func (s *Stream[T, U]) AppendEvent(e Event[T, U]) {
 	s.IncrementVersion()
-	s.outbox = append(s.outbox, newOutboxEvent(e, s.version))
+	s.outbox = append(s.outbox, newOutboxEvent[T](e, s.version))
 }
